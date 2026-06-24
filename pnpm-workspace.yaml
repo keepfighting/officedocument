@@ -1,0 +1,4 @@
+allowBuilds:
+  esbuild: false
+  tesseract.js: false
+  vue-demi: false

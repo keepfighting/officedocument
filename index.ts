@@ -1,0 +1,96 @@
+import { getAllQueryString } from 'ranuts/utils';
+import { initEmbedApi, detectEmbedMode } from './src/lib/embed-api';
+import { initEvents, setEventUICallbacks } from './src/lib/events';
+// import {
+//   // onCreateNew,
+//   // openDocumentFromUrl,
+//   // setUICallbacks
+// } from './src/lib/document';
+// import {
+//   // createControlPanel,
+//   // createFixedActionButton,
+//   // hideControlPanel,
+//   // showControlPanel,
+//   // showMenuGuide,
+// } from './src/lib/ui';
+// import '@khmyznikov/pwa-install';
+import '@/assets/base.css';
+import '@/assets/main.css';
+
+
+declare global {
+  interface Window {
+    // onCreateNew: (ext: string) => Promise<void>;
+    // hideControlPanel?: () => void;
+    // showControlPanel?: () => void;
+    DocsAPI: {
+      DocEditor: new (elementId: string, config: any) => any;
+    };
+  }
+}
+
+// Initialize events
+initEvents();
+initEmbedApi();
+
+// Set up UI callbacks to avoid circular dependency
+// setUICallbacks({
+//   hideControlPanel,
+//   showControlPanel,
+//   showMenuGuide,
+// });
+
+// // Set up UI callbacks for events module
+// setEventUICallbacks({
+//   hideControlPanel,
+//   showMenuGuide,
+// });
+
+// Export onCreateNew to window
+// window.onCreateNew = onCreateNew;
+
+// Export control panel functions for use in other modules
+// window.hideControlPanel = hideControlPanel;
+// window.showControlPanel = showControlPanel;
+
+// Initialize UI components
+// createFixedActionButton();
+// createControlPanel();
+
+// Check for file or src parameter in URL
+// Both parameters support opening document from URL
+// Priority: file > src (for backward compatibility)
+// Examples:
+//   ?file=https://example.com/doc.docx
+//   ?src=https://example.com/doc.docx
+//   ?file=doc1.docx&src=doc2.xlsx (will use file: doc1.docx)
+// const { file, src } = getAllQueryString();
+// const documentUrl = file || src;
+// if (documentUrl) {
+//   // Decode URL if it's encoded
+//   try {
+//     const decodedUrl = decodeURIComponent(documentUrl);
+//     // Open document from URL
+//     openDocumentFromUrl(decodedUrl);
+//   } catch (error) {
+//     // If decoding fails, try using original URL
+//     console.warn('Failed to decode URL, using original:', error);
+//     openDocumentFromUrl(documentUrl);
+//   }
+// }
+
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('./sw.js')
+      .then((registration) => {
+        console.log('SW registered: ', registration);
+        // Check for updates on every page load
+        registration.update();
+      })
+      .catch((registrationError) => {
+        console.log('SW registration failed: ', registrationError);
+      });
+  });
+}
