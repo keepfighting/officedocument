@@ -30,6 +30,7 @@ function getQueryValue(key: string): string | null {
   return new URLSearchParams(window.location.search).get(key);
 }
 
+const allowedOrigin = getQueryValue('embedOrigin');
 export function detectEmbedMode(): boolean {
   if (window.parent !== window) {
     return true;
@@ -46,7 +47,6 @@ function normalizeTargetOrigin(origin: string): string {
 }
 
 function shouldAcceptMessage(event: MessageEvent): boolean {
-  const allowedOrigin = getQueryValue('embedOrigin');
   if (!allowedOrigin) {
     return true;
   }
@@ -58,14 +58,14 @@ function postToParent(type: string, payload: EmbedResponsePayload = {}, id?: str
   if (!isEmbedMode) {
     return;
   }
-
+  debugger
   window.parent.postMessage(
     {
       id,
       type,
       payload,
     },
-    parentOrigin,
+    allowedOrigin || parentOrigin,
   );
 }
 
